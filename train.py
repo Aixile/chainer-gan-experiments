@@ -35,7 +35,6 @@ def main():
     parser.add_argument("--load_dis_model", default='', help='load discriminator model')
 
     parser.add_argument("--load_dataset", default='celeba_train', help='load dataset')
-
     parser.add_argument("--dataset_path", "-d", default="/home/aixile/Workspace/dataset/celeba/",
                         help='dataset directory')
 
