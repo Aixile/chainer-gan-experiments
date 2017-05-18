@@ -36,6 +36,8 @@ def main():
 
     parser.add_argument("--lambda_tv", type=float, default=0, help='total variation regularization')
 
+    parser.add_argument("--use_buffer", type=int, default=0, help='discriminate images from buffer')
+
     parser.add_argument("--load_dataset", default='celeba_train', help='load dataset')
     parser.add_argument("--dataset_path", "-d", default="/home/aixile/Workspace/dataset/celeba/",
                         help='dataset directory')
@@ -85,7 +87,9 @@ def main():
             'img_size': 64,
             'latent_len': 100,
             'gan_type': 'ls',
-            'lambda_tv': args.lambda_tv
+            'lambda_tv': args.lambda_tv,
+            'batch_size': args.batch_size,
+            'use_buffer':
         },
     )
 
