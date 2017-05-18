@@ -25,6 +25,30 @@ def loss_func_adv_dis_real(y_real):
 def loss_func_adv_dis_fake(y_fake):
     F.sum(F.softplus(y_fake)) / np.prod(y_fake.data.shape)
 
+def loss_func_tv_l2(x_out):
+    xp = cuda.get_array_module(x_out.data)
+    b, ch, h, w = x_out.data.shape
+    Wx = xp.zeros((ch, ch, 2, 2), dtype="f")
+    Wy = xp.zeros((ch, ch, 2, 2), dtype="f")
+    for i in range(ch):
+        Wx[i,i,0,0] = -1
+        Wx[i,i,0,1] = 1
+        Wy[i,i,0,0] = -1
+        Wy[i,i,1,0] = 1
+    return F.sum(F.convolution_2d(x_out, W=Wx) ** 2) + F.sum(F.convolution_2d(x_out, W=Wy) ** 2)
+
+def loss_func_tv_l1(x_out):
+    xp = cuda.get_array_module(x_out.data)
+    b, ch, h, w = x_out.data.shape
+    Wx = xp.zeros((ch, ch, 2, 2), dtype="f")
+    Wy = xp.zeros((ch, ch, 2, 2), dtype="f")
+    for i in range(ch):
+        Wx[i,i,0,0] = -1
+        Wx[i,i,0,1] = 1
+        Wy[i,i,0,0] = -1
+        Wy[i,i,1,0] = 1
+    return F.sum(F.absolute(F.convolution_2d(x_out, W=Wx))) + F.sum(F.absolute(F.convolution_2d(x_out, W=Wy)))
+
 class Updater(chainer.training.StandardUpdater):
 
     def __init__(self, *args, **kwargs):
@@ -34,6 +58,7 @@ class Updater(chainer.training.StandardUpdater):
         self._img_size = params['img_size']
         self._latent_len = params['latent_len']
         self._gan_type = params['gan_type']
+        self._lambda_tv = params['lambda_tv']
         super(Updater, self).__init__(*args, **kwargs)
 
     def update_core(self):
@@ -63,11 +88,15 @@ class Updater(chainer.training.StandardUpdater):
         y_real = self.dis(t_out, test=False)
 
         if self._gan_type == 'ls':
-            loss_gen =loss_func_adv_dis_real_ls(y_fake)
+            loss_gen_adv =loss_func_adv_dis_real_ls(y_fake)
         else:
-            loss_gen =loss_func_adv_dis_real(y_fake)
+            loss_gen_adv =loss_func_adv_dis_real(y_fake)
 
-        chainer.report({'loss': loss_gen}, self.gen)
+        loss_tv = self._lambda_tv*loss_func_tv_l2(x_out)
+
+        chainer.report({'loss_adv': loss_gen_adv, 'loss_tv':loss_tv}, self.gen)
+        loss_gen = loss_gen_adv + loss_tv
+
         loss_gen.backward()
         opt_g.update()
 

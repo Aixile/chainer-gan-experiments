@@ -34,6 +34,8 @@ def main():
     parser.add_argument("--load_gen_model", default='', help='load generator model')
     parser.add_argument("--load_dis_model", default='', help='load discriminator model')
 
+    parser.add_argument("--lambda_tv", type=float, default=0, help='total variation regularization')
+
     parser.add_argument("--load_dataset", default='celeba_train', help='load dataset')
     parser.add_argument("--dataset_path", "-d", default="/home/aixile/Workspace/dataset/celeba/",
                         help='dataset directory')
@@ -82,7 +84,8 @@ def main():
         params={
             'img_size': 64,
             'latent_len': 100,
-            'gan_type': 'ls'
+            'gan_type': 'ls',
+            'lambda_tv': args.lambda_tv
         },
     )
 
@@ -96,7 +99,7 @@ def main():
     trainer.extend(extensions.snapshot_object(
         dis, 'dis_{.updater.iteration}.npz'), trigger=model_save_interval)
 
-    log_keys = ['epoch', 'iteration', 'gen/loss', 'dis/loss']
+    log_keys = ['epoch', 'iteration', 'gen/loss_adv', 'gen/loss_tv', 'dis/loss']
     trainer.extend(extensions.LogReport(keys=log_keys, trigger=(20, 'iteration')))
     trainer.extend(extensions.PrintReport(log_keys), trigger=(20, 'iteration'))
     trainer.extend(extensions.ProgressBar(update_interval=50))
