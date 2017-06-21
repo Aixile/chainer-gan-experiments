@@ -9,15 +9,11 @@ import argparse
 import sys
 sys.path.insert(0, '../')
 
-
 import common.datasets as datasets
 from common.models.generators import *
 from common.models.discriminators import *
 from common.utils import *
-
 from updater import *
-
-
 
 def main():
     parser = argparse.ArgumentParser(
@@ -54,7 +50,7 @@ def main():
         chainer.cuda.get_device(args.gpu).use()
 
     gen = DCGANGenerator(latent=args.latent_len, out_ch=args.image_channels)
-    dis = DCGANDiscriminator(in_ch=args.image_channels)
+    dis = DCGANDiscriminator(in_ch=args.image_channels, noise_all_layer=False, conv_as_last=False)
 
     if args.load_gen_model != '':
         serializers.load_npz(args.load_gen_model, gen)

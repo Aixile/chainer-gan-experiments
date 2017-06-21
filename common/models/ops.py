@@ -100,7 +100,7 @@ class NNBlock(chainer.Chain):
         if self.norm == 'bn':
             return self.n(x, test=test)
         elif self.norm == 'ln':
-            return self.normalization(x)
+            return self.n(x)
         else:
             return x
 
@@ -118,7 +118,7 @@ class NNBlock(chainer.Chain):
             x = F.dropout(x, train=not test)
         return x
 
-    def __call__(self, x, test):
+    def __call__(self, x, test, retain_forward=False):
         if self.normalize_input:
             x = self._do_normalization(x, test)
 
@@ -131,4 +131,31 @@ class NNBlock(chainer.Chain):
 
         if not self.activation is None:
             x = self.activation(x)
+
+        if retain_forward:
+            self.x = x
         return x
+
+    def differentiable_backward(self, g):
+        if not self.norm is None:
+            raise NotImplementedError
+
+        if x.activation is F.leaky_relu:
+            g = backward_leaky_relu(self.x, g)
+        elif x.activation is F.relu:
+            g = backward_relu(self.x, g)
+        elif x.activation is F.tanh:
+            g = backward_tanh(self.x, g)
+        elif x.activation is F.sigmoid:
+            g = backward_sigmoid(self.x, g)
+        elif not x.activation is None:
+            raise NotImplementedError
+
+        if x.nn == 'down_conv' or x.nn == 'conv':
+            g = backward_convolution(None, g, self.c)
+        elif x.nn == 'linear':
+            g = backward_linear(None, g, self.c)
+        else:
+            raise NotImplementedError
+
+        return g
