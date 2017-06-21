@@ -21,6 +21,6 @@ class mnist_train(datasets_base):
     def get_example(self, i):
         img = self.train.__getitem__(i)
         img = self.do_resize(img)
-        img = np.expand_dims(img, axis=0)
+        img = np.expand_dims(img, axis=2)
         img = self.preprocess_image(img)
         return img
