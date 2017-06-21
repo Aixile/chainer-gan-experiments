@@ -28,6 +28,11 @@ class Updater(chainer.training.StandardUpdater):
             t_out[i, :] = xp.asarray(batch[i])
         return t_out
 
+    def get_fake_image_batch(self):
+        z = self.get_latent_code_batch()
+        x_out = self.gen(Variable(z, volatile=True), test=True).data
+        return x_out
+
     def get_latent_code_batch(self):
         xp = self.gen.xp
         z_in = xp.random.normal(size=(self._batch_size, self._latent_len)).astype("f")
