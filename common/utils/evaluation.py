@@ -22,3 +22,19 @@ def gan_sampling(gen, eval_folder, gpu, rows=6, cols=6, latent_len=128):
             grid_w=rows, grid_h=cols)
 
     return samples_generation
+
+def analogy(gen, output, samples=10, latent_len=128, points=10):
+    xp = gen.xp
+    z0 = xp.random.normal(size=(samples, latent_len)).astype("f")
+    z1 = xp.random.normal(size=(samples, latent_len)).astype("f")
+    values = np.linspace(0.0, 1.0, num=points)
+    results = []
+    for i in range(points):
+        z = (values[i]*z0 + (1.0-values[i])*z1).astype("f")
+        z = Variable(z, volatile=True)
+        imgs = gen(z, test=True)
+        results.append(imgs)
+    results = xp.asarray(results)
+    _p, _b, _ch, _w, _h = results
+    results = results.reshape((_p*_b, _ch, _w, _h))
+    save_images_grid(results, path=output, grid_w=_p, grid_h=_b)
