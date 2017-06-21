@@ -14,6 +14,7 @@ from common.models.generators import *
 from common.models.discriminators import *
 from common.utils import *
 from updater import *
+import settings
 
 def main():
     parser = argparse.ArgumentParser(
@@ -32,6 +33,10 @@ def main():
     parser.add_argument("--learning_rate_d", type=float, default=0.0002,
                         help="Learning rate for discriminator")
 
+    parser.add_argument('--gen_class', default='', help='generator class')
+    parser.add_argument('--dis_class', default='', help='discriminator class')
+
+
     parser.add_argument("--load_gen_model", default='', help='load generator model')
     parser.add_argument("--load_dis_model", default='', help='load discriminator model')
 
@@ -40,7 +45,7 @@ def main():
     parser.add_argument("--latent_len", type=int, default=128, help='latent vector length')
 
     parser.add_argument("--load_dataset", default='celeba_train', help='load dataset')
-    parser.add_argument("--dataset_path", "-d", default="/home/aixile/Workspace/dataset/celeba/",
+    parser.add_argument("--dataset_path", "-d", default=settings.CELEBA_PATH,
                         help='dataset directory')
 
     args = parser.parse_args()
@@ -49,8 +54,15 @@ def main():
     if args.gpu >= 0:
         chainer.cuda.get_device(args.gpu).use()
 
-    gen = DCGANGenerator(latent=args.latent_len, out_ch=args.image_channels)
-    dis = DCGANDiscriminator(in_ch=args.image_channels, noise_all_layers=False, conv_as_last=False)
+    if args.gen_class != '':
+        gen = eval(args.gen_class)
+    else:
+        gen = DCGANGenerator(latent=args.latent_len, out_ch=args.image_channels)
+
+    if args.dis_class != '':
+        dis = eval(args.dis_class)
+    else:
+        dis = DCGANDiscriminator(base_size=64, down_layers=5, in_ch=args.image_channels, noise_all_layers=True, conv_as_last=True)
 
     if args.load_gen_model != '':
         serializers.load_npz(args.load_gen_model, gen)

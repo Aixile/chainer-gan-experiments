@@ -17,7 +17,6 @@ class Updater(chainer.training.StandardUpdater):
         self._img_chan = params['img_chan']
         self._batch_size = params['batch_size']
         self._latent_len = params['latent_len']
-        self._iter = 0
         super(Updater, self).__init__(*args, **kwargs)
 
     def get_real_image_batch(self):
@@ -41,9 +40,6 @@ class Updater(chainer.training.StandardUpdater):
     def update_core(self):
         xp = self.gen.xp
         self._iter += 1
-
-        batch = self.get_iterator('main').next()
-        batchsize = len(batch)
 
         opt_g = self.get_optimizer('gen')
         opt_d = self.get_optimizer('dis')

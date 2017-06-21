@@ -19,6 +19,11 @@ def selu(x):
     scale = float(1.0507009873554804934193349852946)
     return  scale * F.elu(x, alpha = alpha)
 
+def weight_clipping(model, lower=-0.01, upper=0.01):
+    for params in self.params():
+        params_clipped = F.clip(params, lower, upper)
+        params.data = params_clipped.data
+
 class ResBlock(chainer.Chain):
     def __init__(self, ch, bn=True, activation=F.relu, k_size=3):
         self.bn = bn
