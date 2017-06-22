@@ -1,6 +1,9 @@
 # Chainer-GANs
 
 Various GANs with Chainer
+### Requirement 
+* Chainer==1.24.0 
+* OpenCV
 
 ### List
 * DCGAN: [Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks](https://arxiv.org/abs/1511.06434)
@@ -22,6 +25,7 @@ The current version of Chainer do not support high order derivatives, a solution
 
 
 **Special thanks to [mattya](https://github.com/mattya) for the idea and reference codes.**
+
 
 
 
