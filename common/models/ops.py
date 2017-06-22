@@ -6,6 +6,7 @@ import chainer.links as L
 from chainer import cuda, optimizers, serializers, Variable
 from chainer import function
 from chainer.utils import type_check
+from .backwards import *
 
 def add_noise(h, test, sigma=0.2):
     xp = cuda.get_array_module(h.data)
@@ -153,7 +154,7 @@ class NNBlock(chainer.Chain):
             g = backward_tanh(self.x, g)
         elif self.activation is F.sigmoid:
             g = backward_sigmoid(self.x, g)
-        elif not x.activation is None:
+        elif not self.activation is None:
             raise NotImplementedError
 
         if self.nn == 'down_conv' or self.nn == 'conv':

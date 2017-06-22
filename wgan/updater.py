@@ -54,9 +54,9 @@ class Updater(chainer.training.StandardUpdater):
             y_fake = self.dis(Variable(d_fake), test=False)
             y_real = self.dis(Variable(d_real), test=False)
 
-            g = F.average(y_fake-y_real)
+            w1 = F.average(y_fake-y_real)
 
-            loss_dis = g
+            loss_dis = w1
 
             if self._mode == 'gp':
                 eta = np.random.rand()
