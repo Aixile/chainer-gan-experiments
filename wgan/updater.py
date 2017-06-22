@@ -78,7 +78,7 @@ class Updater(chainer.training.StandardUpdater):
             if self._mode == 'clip':
                 self.dis.clip()
 
-        chainer.report({'loss': loss_dis,'loss_w1': g}, self.dis)
+        chainer.report({'loss': loss_dis,'loss_w1': w1}, self.dis)
 
         z_in = self.get_latent_code_batch()
         x_out = self.gen(Variable(z_in), test=False)
