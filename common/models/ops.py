@@ -145,22 +145,22 @@ class NNBlock(chainer.Chain):
         if not self.norm is None:
             raise NotImplementedError
 
-        if x.activation is F.leaky_relu:
+        if self.activation is F.leaky_relu:
             g = backward_leaky_relu(self.x, g)
-        elif x.activation is F.relu:
+        elif self.activation is F.relu:
             g = backward_relu(self.x, g)
-        elif x.activation is F.tanh:
+        elif self.activation is F.tanh:
             g = backward_tanh(self.x, g)
-        elif x.activation is F.sigmoid:
+        elif self.activation is F.sigmoid:
             g = backward_sigmoid(self.x, g)
         elif not x.activation is None:
             raise NotImplementedError
 
-        if x.nn == 'down_conv' or x.nn == 'conv':
+        if self.nn == 'down_conv' or self.nn == 'conv':
             g = backward_convolution(None, g, self.c)
-        elif x.nn == 'linear':
+        elif self.nn == 'linear':
             g = backward_linear(None, g, self.c)
-        elif x.nn == 'up_deconv':
+        elif self.nn == 'up_deconv':
             g = backward_deconvolution(None, g, self.c)
         else:
             raise NotImplementedError

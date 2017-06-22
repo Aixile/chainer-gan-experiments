@@ -64,7 +64,7 @@ class Updater(chainer.training.StandardUpdater):
                 y = self.dis(Variable(c), test=False, retain_forward=True)
 
                 g = xp.ones_like(y.data)
-                grad_c = dis.differentiable_backward(Variable(g))
+                grad_c = self.dis.differentiable_backward(Variable(g))
                 grad_c_l2 = F.sqrt(F.sum(grad_c**2, axis=(1, 2, 3)))
 
                 loss_gp = loss_l2(grad_c_l2, 1.0)
