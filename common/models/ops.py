@@ -102,11 +102,14 @@ class NNBlock(chainer.Chain):
 
         super(NNBlock, self).__init__(**layers)
 
-    def _do_normalization(self, x, test):
+    def _do_normalization(self, x, test, retain_forward=False):
         if self.norm == 'bn':
             return self.n(x, test=test)
         elif self.norm == 'ln':
-            return self.n(x)
+            y = self.n(x)
+            if retain_forward:
+                self.nx = y
+            return y
         else:
             return x
 
@@ -126,13 +129,13 @@ class NNBlock(chainer.Chain):
 
     def __call__(self, x, test, retain_forward=False):
         if self.normalize_input:
-            x = self._do_normalization(x, test)
+            x = self._do_normalization(x, test, retain_forward=retain_forward)
 
         x = self._do_before_cal(x)
         x = self.c(x)
 
-        if  not self.norm is None and not self.normalize_input:
-            x = self._do_normalization(x, test)
+        if not self.norm is None and not self.normalize_input:
+            x = self._do_normalization(x, test, retain_forward=retain_forward)
         x = self._do_after_cal(x, test)
 
         if not self.activation is None:
@@ -143,7 +146,7 @@ class NNBlock(chainer.Chain):
         return x
 
     def differentiable_backward(self, g):
-        if not self.norm is None:
+        if self.normalize_input:
             raise NotImplementedError
 
         if self.activation is F.leaky_relu:
@@ -155,6 +158,11 @@ class NNBlock(chainer.Chain):
         elif self.activation is F.sigmoid:
             g = backward_sigmoid(self.x, g)
         elif not self.activation is None:
+            raise NotImplementedError
+
+        if self.norm == 'ln':
+            g = backward_sigmoid(self.nx, g, self.n)
+        elif not self.norm is None:
             raise NotImplementedError
 
         if self.nn == 'down_conv' or self.nn == 'conv':

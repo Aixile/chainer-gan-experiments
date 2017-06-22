@@ -1,12 +1,13 @@
 import numpy as np
 import math
-import chainer
 import chainer.functions as F
+import chainer
 import chainer.links as L
 from chainer import cuda, optimizers, serializers, Variable
 from chainer import function
 from chainer.utils import type_check
 from .ops import *
+from chainer import cuda, optimizers, serializers, Variable
 
 class ThreeLayersMLP(chainer.Chain):
     def __init__(self, hidden_size=768, output_size=1, use_bn=True):
