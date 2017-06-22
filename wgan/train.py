@@ -82,18 +82,12 @@ def main():
         dis.to_gpu()
         print("use gpu {}".format(args.gpu))
 
-
-    def make_optimizer(model, alpha=0.0002, beta1=0.5):
-        optimizer = chainer.optimizers.Adam(alpha=alpha, beta1=beta1)
-        optimizer.setup(model)
-        return optimizer
-
     if args.mode == 'gp':
         opt_g = make_adam(gen, lr=args.learning_rate_g, beta1=0.5)
         opt_d = make_adam(dis, lr=args.learning_rate_d, beta1=0.5)
     else:
-        opt_g = make_rmsprop(gen, lr=args.learning_rate_g, beta1=0.5)
-        opt_d = make_rmsprop(dis, lr=args.learning_rate_d, beta1=0.5)
+        opt_g = make_rmsprop(gen, lr=args.learning_rate_g)
+        opt_d = make_rmsprop(dis, lr=args.learning_rate_d)
 
 
     train_dataset = getattr(datasets, args.load_dataset)(path=args.dataset_path)

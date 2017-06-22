@@ -21,7 +21,7 @@ def selu(x):
     return  scale * F.elu(x, alpha = alpha)
 
 def weight_clipping(model, lower=-0.01, upper=0.01):
-    for params in self.params():
+    for params in model.params():
         params_clipped = F.clip(params, lower, upper)
         params.data = params_clipped.data
 
