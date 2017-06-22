@@ -11,6 +11,10 @@ def backward_convolution(x_in, x, l):
     y = F.deconvolution_2d(x, l.W, None, l.stride, l.pad, None)#(x_in.data.shape[2], x_in.data.shape[3]))
     return y
 
+def backward_deconvolution(x_in, x, l):
+    y = F.convolution_2d(x, l.W, None, l.stride, l.pad)
+    return y
+
 def backward_relu(x_in, x):
     y = (x_in.data>0) * x
     return y

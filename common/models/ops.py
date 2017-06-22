@@ -160,6 +160,8 @@ class NNBlock(chainer.Chain):
             g = backward_convolution(None, g, self.c)
         elif x.nn == 'linear':
             g = backward_linear(None, g, self.c)
+        elif x.nn == 'up_deconv':
+            g = backward_deconvolution(None, g, self.c)
         else:
             raise NotImplementedError
 
