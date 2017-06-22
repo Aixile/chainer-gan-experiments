@@ -50,7 +50,7 @@ class DCGANDiscriminator(chainer.Chain):
         h = self.c_last(h, test=test, retain_forward=retain_forward)
         return h
 
-    def clip(self, upper=0.1, lower=-0.1):
+    def clip(self, upper=0.01, lower=-0.01):
         weight_clipping(self, upper=upper, lower=lower)
 
     def differentiable_backward(self, g):
