@@ -8,6 +8,7 @@ from chainer import function
 from chainer.utils import type_check
 from .ops import *
 
+
 class DCGANGenerator(chainer.Chain):
     def __init__(self, latent=128, out_ch=3, base_size=1024, use_bn=True, up_layers=4, upsampling='up_deconv'):
         layers = {}
@@ -18,10 +19,10 @@ class DCGANGenerator(chainer.Chain):
 
         if use_bn:
             norm = 'bn'
+            w = chainer.initializers.Normal(0.02)
         else:
             norm = None
-
-        w = chainer.initializers.Normal(0.02)
+            w = None
 
         base = base_size
 

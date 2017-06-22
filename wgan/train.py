@@ -88,7 +88,7 @@ def main():
         optimizer.setup(model)
         return optimizer
 
-    if mode == 'gp':
+    if args.mode == 'gp':
         opt_g = make_adam(gen, lr=args.learning_rate_g, beta1=0.5)
         opt_d = make_adam(dis, lr=args.learning_rate_d, beta1=0.5)
     else:

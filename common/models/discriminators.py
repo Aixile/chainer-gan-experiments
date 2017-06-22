@@ -8,6 +8,7 @@ from chainer import function
 from chainer.utils import type_check
 from .ops import *
 
+
 class DCGANDiscriminator(chainer.Chain):
     def __init__(self, in_ch=3, base_size=128, down_layers=4, use_bn=True, noise_all_layers=False, conv_as_last=False, w_init=None):
         layers = {}
