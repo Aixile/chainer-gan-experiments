@@ -5,12 +5,11 @@ Various GANs with Chainer
 ### List
 * DCGAN: [Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks](https://arxiv.org/abs/1511.06434)
 * LSGAN: [Least Squares Generative Adversarial Networks](https://arxiv.org/abs/1611.04076)
-* [WIP]WGAN: [Wasserstein GAN](https://arxiv.org/abs/1701.07875)
-* [WIP]WGAN-GP: [Improved Training of Wasserstein GANs](https://arxiv.org/abs/1704.00028)
-* [WIP]DRAGAN: [How to Train Your DRAGAN](https://arxiv.org/abs/1705.07215)
+* WGAN: [Wasserstein GAN](https://arxiv.org/abs/1701.07875)
+* WGAN-GP: [Improved Training of Wasserstein GANs](https://arxiv.org/abs/1704.00028)
+* DRAGAN: [How to Train Your DRAGAN](https://arxiv.org/abs/1705.07215)
 * [WIP]Alpha-GAN: [Variational Approaches for Auto-Encoding Generative Adversarial Networks](https://arxiv.org/abs/1706.04987)
 
-** More GANs is comming soon. **
 
 ### Gradient Penalty
 
@@ -22,7 +21,7 @@ The current version of Chainer do not support high order derivatives, a solution
 * Some GAN papers suggest to use LayerNormalization instead on BatchNormalization in the discriminator in the case of gradient penalty. 
 
 
-Special thanks to [mattya](https://github.com/mattya) for the idea and reference codes.
+**Special thanks to [mattya](https://github.com/mattya) for the idea and reference codes.**
 
 
 
