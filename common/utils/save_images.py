@@ -24,7 +24,7 @@ def postprocessing_tanh(imgs):
     imgs = imgs.astype(np.uint8)
     return imgs
 
-def save_images_grid(imgs, path, grid_w=4, grid_h=4, post_processing=postprocessing_tanh):
+def save_images_grid(imgs, path, grid_w=4, grid_h=4, post_processing=postprocessing_tanh, transposed=False):
     imgs = copy_to_cpu(imgs)
     if post_processing is not None:
         imgs = post_processing(imgs)
@@ -33,7 +33,10 @@ def save_images_grid(imgs, path, grid_w=4, grid_h=4, post_processing=postprocess
 
     imgs = imgs.reshape((grid_w, grid_h, ch, w, h))
     imgs = imgs.transpose(0, 1, 3, 4, 2)
-    imgs = imgs.reshape((grid_w, grid_h, w, h, ch)).transpose(0, 2, 1, 3, 4).reshape((grid_w*w, grid_h*h, ch))
+    if transposed:
+        imgs = imgs.reshape((grid_w, grid_h, w, h, ch)).transpose(1, 2, 0, 3, 4).reshape((grid_h*w, grid_w*h, ch))
+    else:
+        imgs = imgs.reshape((grid_w, grid_h, w, h, ch)).transpose(0, 2, 1, 3, 4).reshape((grid_w*w, grid_h*h, ch))
     if ch==1:
         imgs = imgs.reshape((grid_w*w, grid_h*h))
     cv2.imwrite(path, imgs)

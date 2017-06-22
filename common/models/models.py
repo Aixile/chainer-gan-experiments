@@ -26,3 +26,41 @@ class ThreeLayersMLP(chainer.Chain):
         h = self.l1(h, test=test)
         h = self.l2(h, test=test)
         return h
+
+class DCGANEncoder(chainer.Chain):
+    def __init__(self, in_ch=3, out_len=128, base_size=128, down_layers=4, use_bn=True, w_init=None):
+        layers = {}
+
+        self.down_layers = down_layers
+        self.conv_as_last = conv_as_last
+
+        if use_bn:
+            norm = 'bn'
+        else:
+            norm = None
+
+        act = F.relu
+        #if w_init is None:
+        #    w_init = chainer.initializers.Normal(0.02)
+
+        layers['c_first'] = NNBlock(in_ch, base_size, nn='down_conv', norm=None, activation=act,  w_init=w_init)
+        base = base_size
+
+        for i in range(down_layers-1):
+            layers['c'+str(i)] = NNBlock(base, base*2, nn='down_conv', norm=norm, activation=act,  w_init=w_init)
+            base*=2
+
+        layers['c_last'] = NNBlock(None, out_len, nn='linear', norm=None, activation=None, w_init=w_init)
+
+        super(DCGANEncoder, self).__init__(**layers)
+
+    def __call__(self, x, test=False):
+        h = self.c_first(x, test=test)
+        for i in range(self.down_layers-1):
+            h = getattr(self, 'c'+str(i))(h, test=test)
+        if not self.conv_as_last:
+            _b, _ch, _w, _h = h.data.shape
+            self.last_shape=(_b, _ch, _w, _h)
+            h = F.reshape(h, (_b, _ch*_w*_h))
+        h = self.c_last(h, test=test)
+        return h

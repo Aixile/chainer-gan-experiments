@@ -35,4 +35,4 @@ def analogy(gen, output, samples=12, latent_len=128, points=10):
         imgs = gen(z, test=True)
         results.append(imgs.data)
     results = xp.concatenate(results, axis=0)
-    save_images_grid(results, path=output, grid_w=points, grid_h=samples)
+    save_images_grid(results, path=output, grid_w=points, grid_h=samples, transposed=True)
