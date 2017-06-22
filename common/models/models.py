@@ -32,8 +32,6 @@ class DCGANEncoder(chainer.Chain):
         layers = {}
 
         self.down_layers = down_layers
-        self.conv_as_last = conv_as_last
-
         if use_bn:
             norm = 'bn'
         else:
@@ -58,9 +56,8 @@ class DCGANEncoder(chainer.Chain):
         h = self.c_first(x, test=test)
         for i in range(self.down_layers-1):
             h = getattr(self, 'c'+str(i))(h, test=test)
-        if not self.conv_as_last:
-            _b, _ch, _w, _h = h.data.shape
-            self.last_shape=(_b, _ch, _w, _h)
-            h = F.reshape(h, (_b, _ch*_w*_h))
+        _b, _ch, _w, _h = h.data.shape
+        self.last_shape=(_b, _ch, _w, _h)
+        h = F.reshape(h, (_b, _ch*_w*_h))
         h = self.c_last(h, test=test)
         return h
