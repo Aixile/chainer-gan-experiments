@@ -21,7 +21,7 @@ def main():
     parser = argparse.ArgumentParser(
         description='Train Alpha-GAN')
     parser.add_argument('--batch_size', '-b', type=int, default=64)
-    parser.add_argument('--max_iter', '-m', type=int, default=50000)
+    parser.add_argument('--max_iter', '-m', type=int, default=100000)
     parser.add_argument('--gpu', '-g', type=int, default=0,
                         help='GPU ID (negative value indicates CPU)')
     parser.add_argument('--out', '-o', default='result',
@@ -40,6 +40,7 @@ def main():
     parser.add_argument("--load_dis_z_model", default='', help='load code discriminator model')
 
     parser.add_argument("--lambda_l1", type=float, default=10, help='lambda for l1 loss')
+    parser.add_argument("--lambda_gp", type=float, default=10, help='lambda for gp loss')
 
     parser.add_argument("--image_size", type=int, default=64, help='image size')
     parser.add_argument("--image_channels", type=int, default=3, help='number of image channels')
@@ -57,15 +58,15 @@ def main():
 
     gen = DCGANGenerator(latent=args.latent_len, out_ch=args.image_channels)
     enc = DCGANEncoder(out_len=args.latent_len, in_ch=args.image_channels)
-    dis_x = DCGANDiscriminator(in_ch=args.image_channels, noise_all_layers=False, conv_as_last=False)
-    dis_z = ThreeLayersMLP()
+    dis_x = DCGANDiscriminator(in_ch=args.image_channels, noise_all_layers=False, conv_as_last=False, use_bn=False)
+    dis_z = ThreeLayersMLP(use_bn=False)
 
     if args.load_gen_model != '':
         serializers.load_npz(args.load_gen_model, gen)
         print("Generator model loaded")
 
     if args.load_enc_model != '':
-        serializers.load_npz(args.load_dis_model, enc)
+        serializers.load_npz(args.load_enc_model, enc)
         print("Encoder model loaded")
 
     if args.load_dis_x_model != '':
@@ -92,7 +93,7 @@ def main():
     train_iter = chainer.iterators.MultiprocessIterator(
         train_dataset, args.batch_size, n_processes=4)
 
-    updater = Updater(
+    updater = UpdaterWithGP(
         models=(gen, enc, dis_x, dis_z),
         iterator={
             'main': train_iter,
@@ -110,6 +111,7 @@ def main():
             'img_chan': args.image_channels,
             'latent_len': args.latent_len,
             'lambda_l1': args.lambda_l1,
+            'lambda_gp': args.lambda_gp,
         },
     )
 
@@ -133,8 +135,9 @@ def main():
     trainer.extend(extensions.ProgressBar(update_interval=50))
 
     trainer.extend(
-        Evaluation(gen, args.eval_folder, args.gpu, latent_len=args.latent_len), trigger=eval_interval
+        gan_sampling(gen, args.out+"/preview/", args.gpu), trigger=eval_interval
     )
+
 
     trainer.run()
 

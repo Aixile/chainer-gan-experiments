@@ -22,11 +22,17 @@ class ThreeLayersMLP(chainer.Chain):
             l2 = NNBlock(hidden_size, output_size, norm=None, activation=None, nn='linear'),
         )
 
-    def __call__(self, x, test=False):
-        h = self.l0(x, test=test)
-        h = self.l1(h, test=test)
-        h = self.l2(h, test=test)
+    def __call__(self, x, test=False, retain_forward=False):
+        h = self.l0(x, test=test, retain_forward=retain_forward)
+        h = self.l1(h, test=test, retain_forward=retain_forward)
+        h = self.l2(h, test=test, retain_forward=retain_forward)
         return h
+        
+    def differentiable_backward(self, g):
+        g = self.l2.differentiable_backward(g)
+        g = self.l1.differentiable_backward(g)
+        g = self.l0.differentiable_backward(g)
+        return g
 
 class DCGANEncoder(chainer.Chain):
     def __init__(self, in_ch=3, out_len=128, base_size=128, down_layers=4, use_bn=True, w_init=None):
