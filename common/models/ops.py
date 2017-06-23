@@ -161,7 +161,7 @@ class NNBlock(chainer.Chain):
             raise NotImplementedError
 
         if self.norm == 'ln':
-            g = backward_sigmoid(self.nx, g, self.n)
+            g = backward_layernormalization(self.nx, g, self.n)
         elif not self.norm is None:
             raise NotImplementedError
 
