@@ -14,6 +14,7 @@ Various GANs with Chainer
 * [WIP] CramerGAN: [The Cramer Distance as a Solution to Biased Wasserstein Gradients](https://arxiv.org/abs/1705.10743)
 * [WIP] αGAN: [Variational Approaches for Auto-Encoding Generative Adversarial Networks](https://arxiv.org/abs/1706.04987)
 
+By default, all models are tested on the CelabA dataset.
 
 ### Gradient Penalty
 

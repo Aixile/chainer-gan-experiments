@@ -39,8 +39,8 @@ class DCGANEncoder(chainer.Chain):
             norm = None
 
         act = F.relu
-        #if w_init is None:
-        #    w_init = chainer.initializers.Normal(0.02)
+        if w_init is None:
+            w_init = chainer.initializers.Normal(0.02)
 
         layers['c_first'] = NNBlock(in_ch, base_size, nn='down_conv', norm=None, activation=act,  w_init=w_init)
         base = base_size
