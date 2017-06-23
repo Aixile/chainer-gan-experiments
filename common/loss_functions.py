@@ -8,8 +8,8 @@ def loss_l1(h, t):
 def loss_l2(h, t):
     return F.sum((h-t)**2) / np.prod(h.data.shape)
 
-def loss_l2_sqrt(h, t):
-    return F.sqrt(F.sum((h-t)**2) / np.prod(h.data.shape))
+#def loss_l2_sqrt(h, t):
+#    return F.sqrt(F.sum((h-t)**2) / np.prod(h.data.shape))
 
 def loss_func_dcgan_dis_real(y_real):
     return F.sum(F.softplus(-y_real)) / np.prod(y_real.data.shape)
