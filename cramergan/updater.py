@@ -50,6 +50,7 @@ class Updater(chainer.training.StandardUpdater):
         data_z1 = self.get_latent_code_batch()
         x_fake1 = self.gen(Variable(data_z1))
         data_x = self.get_real_image_batch()
+        x_real = Variable(data_x)
 
         eta = np.random.rand()
         x_inter = Variable((data_x * eta + (1.0 - eta) * x_fake0.data).astype('f'))

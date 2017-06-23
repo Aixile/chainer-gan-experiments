@@ -53,12 +53,21 @@ class DCGANEncoder(chainer.Chain):
 
         super(DCGANEncoder, self).__init__(**layers)
 
-    def __call__(self, x, test=False):
-        h = self.c_first(x, test=test)
+    def __call__(self, x, test=False, retain_forward=False):
+        h = self.c_first(x, test=test, retain_forward=retain_forward)
         for i in range(self.down_layers-1):
-            h = getattr(self, 'c'+str(i))(h, test=test)
+            h = getattr(self, 'c'+str(i))(h, test=test, retain_forward=retain_forward)
         _b, _ch, _w, _h = h.data.shape
         self.last_shape=(_b, _ch, _w, _h)
         h = F.reshape(h, (_b, _ch*_w*_h))
-        h = self.c_last(h, test=test)
+        h = self.c_last(h, test=test, retain_forward=retain_forward)
         return h
+
+    def differentiable_backward(self, g):
+        g = self.c_last.differentiable_backward(g)
+        _b, _ch, _w, _h = self.last_shape
+        g = F.reshape(g, (_b, _ch, _w, _h))
+        for i in reversed(range(self.down_layers-1)):
+            g = getattr(self, 'c'+str(i)).differentiable_backward(g)
+        g = self.c_first.differentiable_backward(g)
+        return g
