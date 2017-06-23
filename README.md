@@ -14,7 +14,7 @@ Various GANs with Chainer
 * [WIP] CramerGAN: [The Cramer Distance as a Solution to Biased Wasserstein Gradients](https://arxiv.org/abs/1705.10743)
 * [WIP] αGAN: [Variational Approaches for Auto-Encoding Generative Adversarial Networks](https://arxiv.org/abs/1706.04987)
 
-By default, all models are tested on the CelabA dataset.
+By default, all models are tested on the CelabA dataset. You can find the training results in corresponding folders.
 
 ### Gradient Penalty
 
@@ -27,3 +27,11 @@ The current version of Chainer do not support high order derivatives, a solution
 
 
 **Special thanks to [mattya](https://github.com/mattya) for the idea and reference codes.**
+
+### Samples
+
+Some DRAGAN results:
+
+![DRAGAN_2d_faces](https://raw.githubusercontent.com/Aixile/chainer-gan-experiments/master/dragan/results/2dcharafaces.jpg)
+
+![DRAGAN_2d_Analogy](https://raw.githubusercontent.com/Aixile/chainer-gan-experiments/master/dragan/results/2dcharafaces_analogy.jpg)
