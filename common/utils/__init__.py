@@ -4,4 +4,5 @@ from .save_images import postprocessing_tanh
 from .optimizer import make_adam
 from .optimizer import make_rmsprop
 from .evaluation import gan_sampling
+from .evaluation import ae_reconstruction
 from .evaluation import analogy

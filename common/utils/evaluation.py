@@ -23,6 +23,22 @@ def gan_sampling(gen, eval_folder, gpu, rows=6, cols=6, latent_len=128):
 
     return samples_generation
 
+def ae_reconstruction(enc, dec, eval_folder, gpu, data_iter, batch_size=32, img_chan=3, img_size=64):
+    @chainer.training.make_extension()
+    def sample_reconstruction(trainer):
+        xp = enc.xp
+        batch = data_iter.next()
+        d_real = xp.zeros((batch_size, img_chan, img_size, img_size)).astype("f")
+        for i in range(batch_size):
+            d_real[i, :] = xp.asarray(batch[i])
+        x = Variable(d_real, volatile=True)
+        imgs = dec(enc(x, test=True), test=True)
+        save_images_grid(imgs, path=eval_folder+"/iter_"+str(trainer.updater.iteration)+".rec.jpg",
+            grid_w=batch_size//8, grid_h=8)
+        save_images_grid(d_real, path=eval_folder+"/iter_"+str(trainer.updater.iteration)+".real.jpg",
+            grid_w=batch_size//8, grid_h=8)
+    return sample_reconstruction
+
 def analogy(gen, output, samples=12, latent_len=128, points=10):
     xp = gen.xp
     z0 = xp.random.normal(size=(samples, latent_len)).astype("f")

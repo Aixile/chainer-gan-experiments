@@ -92,6 +92,8 @@ def main():
     train_dataset = getattr(datasets, args.load_dataset)(path=args.dataset_path)
     train_iter = chainer.iterators.MultiprocessIterator(
         train_dataset, args.batch_size, n_processes=4)
+    test_iter = chainer.iterators.SerialIterator(
+        train_dataset, 64)
 
     updater = UpdaterWithGP(
         models=(gen, enc, dis_x, dis_z),
@@ -137,7 +139,9 @@ def main():
     trainer.extend(
         gan_sampling(gen, args.out+"/preview/", args.gpu), trigger=eval_interval
     )
-
+    trainer.extend(
+        ae_reconstruction(enc, gen, args.out+"/preview/", args.gpu, test_iter), trigger=eval_interval
+    )
 
     trainer.run()
 
