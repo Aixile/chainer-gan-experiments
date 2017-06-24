@@ -96,9 +96,9 @@ class UpdaterWithGP(chainer.training.StandardUpdater):
             x_perturbed = Variable(data_x_perturbed)
             dis_x_perturbed = self.dis_x(x_perturbed, retain_forward=True)
 
-            data_z_perturbed = self.get_perturbed_data(d_z_real)
-            z_perturbed = Variable(data_z_perturbed)
-            dis_z_perturbed = self.dis_z(z_perturbed, retain_forward=True)
+            #data_z_perturbed = self.get_perturbed_data(d_z_real)
+            #z_perturbed = Variable(data_z_perturbed)
+            #dis_z_perturbed = self.dis_z(z_perturbed, retain_forward=True)
 
             x_rec.unchain_backward()
             x_fake.unchain_backward()
@@ -112,10 +112,10 @@ class UpdaterWithGP(chainer.training.StandardUpdater):
             grad_l2_x = F.sqrt(F.sum(grad_x**2, axis=(1, 2, 3)))
             loss_gp_x = self._lambda_gp * loss_l2(grad_l2_x, 1.0)
 
-            g_z = Variable(xp.ones_like(dis_z_perturbed.data))
-            grad_z = self.dis_z.differentiable_backward(g_z)
-            grad_l2_z = F.sqrt(F.sum(grad_z**2, axis=(1)))
-            loss_gp_z = self._lambda_gp * loss_l2(grad_l2_z, 1.0)
+            #g_z = Variable(xp.ones_like(dis_z_perturbed.data))
+            #grad_z = self.dis_z.differentiable_backward(g_z)
+            #grad_l2_z = F.sqrt(F.sum(grad_z**2, axis=(1)))
+            #loss_gp_z = self._lambda_gp * loss_l2(grad_l2_z, 1.0)
 
 
             loss_dis_x = loss_func_dcgan_dis_fake(dis_x_fake) + \
@@ -124,8 +124,8 @@ class UpdaterWithGP(chainer.training.StandardUpdater):
                         loss_gp_x
 
             loss_dis_z = loss_func_dcgan_dis_fake(dis_z_fake) + \
-                        loss_func_dcgan_dis_real(dis_z_real) + \
-                        loss_gp_z
+                        loss_func_dcgan_dis_real(dis_z_real)# + \
+                        #loss_gp_z
 
             loss_dis_x.backward()
             loss_dis_z.backward()

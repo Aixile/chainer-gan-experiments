@@ -13,13 +13,15 @@ class ThreeLayersMLP(chainer.Chain):
     def __init__(self, hidden_size=768, output_size=1, use_bn=True):
         if use_bn:
             norm = 'bn'
+            w_init=None
         else:
             norm = None
+            w_init=Chainer.initializers.HeNormal()
 
         super(ThreeLayersMLP, self).__init__(
-            l0 = NNBlock(None, hidden_size, norm=norm, nn='linear'),
-            l1 = NNBlock(hidden_size, hidden_size, norm=norm, nn='linear'),
-            l2 = NNBlock(hidden_size, output_size, norm=None, activation=None, nn='linear'),
+            l0 = NNBlock(None, hidden_size, norm=norm, nn='linear', w_init=w_init),
+            l1 = NNBlock(hidden_size, hidden_size, norm=norm, nn='linear', w_init=w_init),
+            l2 = NNBlock(hidden_size, output_size, norm=None, activation=None, nn='linear', w_init=w_init),
         )
 
     def __call__(self, x, test=False, retain_forward=False):
@@ -27,7 +29,7 @@ class ThreeLayersMLP(chainer.Chain):
         h = self.l1(h, test=test, retain_forward=retain_forward)
         h = self.l2(h, test=test, retain_forward=retain_forward)
         return h
-        
+
     def differentiable_backward(self, g):
         g = self.l2.differentiable_backward(g)
         g = self.l1.differentiable_backward(g)
