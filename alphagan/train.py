@@ -93,7 +93,7 @@ def main():
     train_iter = chainer.iterators.MultiprocessIterator(
         train_dataset, args.batch_size, n_processes=4)
     test_iter = chainer.iterators.SerialIterator(
-        train_dataset, 64)
+        train_dataset, 32)
 
     updater = UpdaterWithGP(
         models=(gen, enc, dis_x, dis_z),

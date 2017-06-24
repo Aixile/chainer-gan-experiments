@@ -95,13 +95,10 @@ class UpdaterWithGP(chainer.training.StandardUpdater):
             data_x_perturbed = self.get_perturbed_data(d_x_real)
             x_perturbed = Variable(data_x_perturbed)
             dis_x_perturbed = self.dis_x(x_perturbed, retain_forward=True)
-            dis_x_sig = F.sigmoid(dis_x_perturbed)
 
             data_z_perturbed = self.get_perturbed_data(d_z_real)
             z_perturbed = Variable(data_z_perturbed)
             dis_z_perturbed = self.dis_z(z_perturbed, retain_forward=True)
-            dis_z_sig = F.sigmoid(dis_z_perturbed)
-
 
             x_rec.unchain_backward()
             x_fake.unchain_backward()
@@ -110,14 +107,12 @@ class UpdaterWithGP(chainer.training.StandardUpdater):
             dis_x_real = self.dis_x(x_real)
             dis_z_real = self.dis_z(z_real)
 
-            g_x = Variable(xp.ones_like(dis_x_sig.data))
-            g_x = backward_sigmoid(dis_x_perturbed.data, g_x)
+            g_x = Variable(xp.ones_like(dis_x_perturbed.data))
             grad_x = self.dis_x.differentiable_backward(g_x)
             grad_l2_x = F.sqrt(F.sum(grad_x**2, axis=(1, 2, 3)))
             loss_gp_x = self._lambda_gp * loss_l2(grad_l2_x, 1.0)
 
-            g_z = Variable(xp.ones_like(dis_z_sig.data))
-            g_z = backward_sigmoid(dis_z_perturbed.data, g_z)
+            g_z = Variable(xp.ones_like(dis_z_perturbed.data))
             grad_z = self.dis_z.differentiable_backward(g_z)
             grad_l2_z = F.sqrt(F.sum(grad_z**2, axis=(1)))
             loss_gp_z = self._lambda_gp * loss_l2(grad_l2_z, 1.0)
