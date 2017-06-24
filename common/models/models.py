@@ -16,11 +16,12 @@ class ThreeLayersMLP(chainer.Chain):
             w_init=None
         else:
             norm = None
-            w_init=Chainer.initializers.HeNormal()
+            w_init=None
+            #w_init=Chainer.initializers.HeNormal()
 
         super(ThreeLayersMLP, self).__init__(
-            l0 = NNBlock(None, hidden_size, norm=norm, nn='linear', w_init=w_init),
-            l1 = NNBlock(hidden_size, hidden_size, norm=norm, nn='linear', w_init=w_init),
+            l0 = NNBlock(None, hidden_size, norm=norm, nn='linear', w_init=w_init, activation=F.leaky_relu),
+            l1 = NNBlock(hidden_size, hidden_size, norm=norm, nn='linear', w_init=w_init, activation=F.leaky_relu),
             l2 = NNBlock(hidden_size, output_size, norm=None, activation=None, nn='linear', w_init=w_init),
         )
 
@@ -47,8 +48,8 @@ class DCGANEncoder(chainer.Chain):
             norm = None
 
         act = F.relu
-        if w_init is None:
-            w_init = chainer.initializers.Normal(0.02)
+        #if w_init is None:
+        #    w_init = chainer.initializers.Normal(0.02)
 
         layers['c_first'] = NNBlock(in_ch, base_size, nn='down_conv', norm=None, activation=act,  w_init=w_init)
         base = base_size
