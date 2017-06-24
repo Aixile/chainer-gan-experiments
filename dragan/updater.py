@@ -70,9 +70,7 @@ class Updater(chainer.training.StandardUpdater):
         x_real = Variable(data_x)
         dis_real = self.dis(x_real)
         dis_perturbed = self.dis(x_perturbed, retain_forward=True)
-        dis_p_sig = F.sigmoid(dis_perturbed)
-        g = Variable(xp.ones_like(dis_p_sig.data))
-        g = backward_sigmoid(dis_perturbed.data, g)
+        g = Variable(xp.ones_like(dis_perturbed.data))
         grad = self.dis.differentiable_backward(g)
 
         grad_l2 = F.sqrt(F.sum(grad**2, axis=(1, 2, 3)))
