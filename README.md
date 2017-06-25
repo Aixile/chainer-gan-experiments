@@ -11,7 +11,7 @@ Various GANs with Chainer
 * WGAN: [Wasserstein GAN](https://arxiv.org/abs/1701.07875)
 * WGAN-GP: [Improved Training of Wasserstein GANs](https://arxiv.org/abs/1704.00028)
 * DRAGAN: [How to Train Your DRAGAN](https://arxiv.org/abs/1705.07215)
-* [WIP] CramerGAN: [The Cramer Distance as a Solution to Biased Wasserstein Gradients](https://arxiv.org/abs/1705.10743)
+* CramerGAN: [The Cramer Distance as a Solution to Biased Wasserstein Gradients](https://arxiv.org/abs/1705.10743)
 * [WIP] αGAN: [Variational Approaches for Auto-Encoding Generative Adversarial Networks](https://arxiv.org/abs/1706.04987)
 
 By default, all models are tested on the CelabA dataset. You can find the training results in corresponding folders.
