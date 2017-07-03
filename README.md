@@ -7,6 +7,7 @@ Various GANs with Chainer
 
 ### List
 * DCGAN: [Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks](https://arxiv.org/abs/1511.06434)
+* [WIP]ACGAN: [Conditional Image Synthesis With Auxiliary Classifier GANs](https://arxiv.org/abs/1610.09585)
 * LSGAN: [Least Squares Generative Adversarial Networks](https://arxiv.org/abs/1611.04076)
 * WGAN: [Wasserstein GAN](https://arxiv.org/abs/1701.07875)
 * WGAN-GP: [Improved Training of Wasserstein GANs](https://arxiv.org/abs/1704.00028)
