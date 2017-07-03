@@ -41,7 +41,7 @@ def gan_sampling_tags(gen, eval_folder, gpu, rows=6, cols=6, latent_len=128, att
         xp = gen.xp
         batch = rows*cols
         tags = xp.zeros((batch, attr_len)).astype("f")
-        for i in range(batch_size):
+        for i in range(batch):
             tags[i] = xp.asarray(get_fake_tag())
         return tags
 

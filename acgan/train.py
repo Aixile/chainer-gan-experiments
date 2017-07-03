@@ -20,7 +20,7 @@ def main():
     parser = argparse.ArgumentParser(
         description='Train ACGAN')
     parser.add_argument('--batch_size', '-b', type=int, default=64)
-    parser.add_argument('--max_iter', '-m', type=int, default=60000)
+    parser.add_argument('--max_iter', '-m', type=int, default=100000)
     parser.add_argument('--gpu', '-g', type=int, default=0,
                         help='GPU ID (negative value indicates CPU)')
     parser.add_argument('--out', '-o', default='result',
@@ -40,6 +40,7 @@ def main():
     parser.add_argument("--load_dis_model", default='', help='load discriminator model')
 
     parser.add_argument("--lambda_gp", type=float, default=10, help='gradient penalty')
+    parser.add_argument("--lambda_adv", type=float, default=1, help='adversarial loss')
 
     parser.add_argument("--image_size", type=int, default=64, help='image size')
     parser.add_argument("--image_channels", type=int, default=3, help='number of image channels')
@@ -100,6 +101,7 @@ def main():
             'img_size': args.image_size,
             'img_chan': args.image_channels,
             'lambda_gp': args.lambda_gp,
+            'lambda_adv': args.lambda_adv,
             'latent_len': args.latent_len,
             'attr_len': args.attr_len
         },

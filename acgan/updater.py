@@ -19,6 +19,7 @@ class UpdaterWithGP(chainer.training.StandardUpdater):
         self._batch_size = params['batch_size']
         self._latent_len = params['latent_len']
         self._lambda_gp = params['lambda_gp']
+        self._lambda_adv = params['lambda_adv']
         self._attr_len = params['attr_len']
         self._threshold = 0.25
         super(UpdaterWithGP, self).__init__(*args, **kwargs)
@@ -83,7 +84,7 @@ class UpdaterWithGP(chainer.training.StandardUpdater):
         data_tag[data_tag < 0] = 0.0
         loss_g_class =loss_sigmoid_cross_entropy_with_logits(dis_g_class, data_tag)
         #print(loss_g_class.data)
-        loss_gen = loss_func_dcgan_dis_real(dis_fake) + loss_g_class
+        loss_gen = self._lambda_adv * loss_func_dcgan_dis_real(dis_fake) + loss_g_class
         chainer.report({'loss': loss_gen, 'loss_c': loss_g_class}, self.gen)
 
         opt_g.zero_grads()
@@ -107,8 +108,8 @@ class UpdaterWithGP(chainer.training.StandardUpdater):
 
         loss_d_class = loss_sigmoid_cross_entropy_with_logits(dis_d_class, data_real_tag)
 
-        loss_dis = loss_func_dcgan_dis_real(dis_real) + \
-                    loss_func_dcgan_dis_fake(dis_fake) + \
+        loss_dis = self._lambda_adv * ( loss_func_dcgan_dis_real(dis_real) + \
+                    loss_func_dcgan_dis_fake(dis_fake) )+ \
                     loss_d_class + \
                     loss_gp
 
