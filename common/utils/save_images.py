@@ -24,6 +24,14 @@ def postprocessing_tanh(imgs):
     imgs = imgs.astype(np.uint8)
     return imgs
 
+def save_single_image(img, path, post_processing=postprocessing_tanh):
+    img = copy_to_cpu(img)
+    if post_processing is not None:
+        img = post_processing(img)
+    #ch, w, h = img.shape
+    img = img.transpose((1, 2, 0))
+    cv2.imwrite(path, img)
+
 def save_images_grid(imgs, path, grid_w=4, grid_h=4, post_processing=postprocessing_tanh, transposed=False):
     imgs = copy_to_cpu(imgs)
     if post_processing is not None:
