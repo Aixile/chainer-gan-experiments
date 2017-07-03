@@ -46,7 +46,7 @@ def main():
     parser.add_argument("--latent_len", type=int, default=128, help='latent vector length')
     parser.add_argument("--attr_len", type=int, default=38, help='attribute vector length')
 
-    parser.add_argument("--load_dataset", default='celeba_train', help='load dataset')
+    parser.add_argument("--load_dataset", default='game_faces_tags_train', help='load dataset')
     parser.add_argument("--dataset_path", "-d", default=settings.GAME_FACE_PATH,
                         help='dataset directory')
 
@@ -115,13 +115,13 @@ def main():
     trainer.extend(extensions.snapshot_object(
         dis, 'dis_{.updater.iteration}.npz'), trigger=model_save_interval)
 
-    log_keys = ['epoch', 'iteration', 'gen/loss','gen/loss_class' 'dis/loss', 'dis/loss_gp', 'dis/loss_class']
+    log_keys = ['epoch', 'iteration', 'gen/loss','gen/loss_c', 'dis/loss', 'dis/loss_gp', 'dis/loss_c']
     trainer.extend(extensions.LogReport(keys=log_keys, trigger=(20, 'iteration')))
     trainer.extend(extensions.PrintReport(log_keys), trigger=(20, 'iteration'))
     trainer.extend(extensions.ProgressBar(update_interval=50))
 
     trainer.extend(
-        gan_sampling(gen, args.out+"/preview/", args.gpu), trigger=eval_interval
+        gan_sampling_tags(gen, args.out+"/preview/", args.gpu, attr_len=args.attr_len), trigger=eval_interval
     )
 
     trainer.run()

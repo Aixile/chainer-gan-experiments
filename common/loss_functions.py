@@ -48,4 +48,4 @@ def loss_func_tv_l2(x_out):
     return F.sum(F.convolution_2d(x_out, W=Wx) ** 2) + F.sum(F.convolution_2d(x_out, W=Wy) ** 2)
 
 def loss_sigmoid_cross_entropy_with_logits(x, t):
-    return x - x*t + F.softplus(-x)
+    return F.sum(x - x*t + F.softplus(-x)) / x.data.shape[0]

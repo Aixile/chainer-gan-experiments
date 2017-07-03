@@ -21,16 +21,18 @@ class UpdaterWithGP(chainer.training.StandardUpdater):
         self._lambda_gp = params['lambda_gp']
         self._attr_len = params['attr_len']
         self._threshold = 0.25
-        super(Updater, self).__init__(*args, **kwargs)
+        super(UpdaterWithGP, self).__init__(*args, **kwargs)
 
     def get_real_image_batch(self):
         xp = self.gen.xp
-        batch, batch_t = self.get_iterator('main').next()
+        batch= self.get_iterator('main').next()
+        #print(batch)
+
         t_out = xp.zeros((self._batch_size, self._img_chan, self._img_size, self._img_size)).astype("f")
         tags = xp.zeros((self._batch_size, self._attr_len)).astype("f")
         for i in range(self._batch_size):
-            t_out[i, :] = xp.asarray(batch[i])
-            tags[i, :] = xp.asarray(batch_t[i])
+            t_out[i, :] = xp.asarray(batch[i][0])
+            tags[i, :] = xp.asarray(batch[i][1])
         return t_out, tags
 
     def get_fake_tag(self):
@@ -80,8 +82,9 @@ class UpdaterWithGP(chainer.training.StandardUpdater):
         dis_fake, dis_g_class = self.dis(x_fake)
         data_tag[data_tag < 0] = 0.0
         loss_g_class =loss_sigmoid_cross_entropy_with_logits(dis_g_class, data_tag)
+        #print(loss_g_class.data)
         loss_gen = loss_func_dcgan_dis_real(dis_fake) + loss_g_class
-        chainer.report({'loss': loss_gen, 'loss_class': loss_g_class}, self.gen)
+        chainer.report({'loss': loss_gen, 'loss_c': loss_g_class}, self.gen)
 
         opt_g.zero_grads()
         loss_gen.backward()
@@ -113,4 +116,4 @@ class UpdaterWithGP(chainer.training.StandardUpdater):
         loss_dis.backward()
         opt_d.update()
 
-        chainer.report({'loss': loss_dis, 'loss_gp': loss_gp, 'loss_class': loss_d_class}, self.dis)
+        chainer.report({'loss': loss_dis, 'loss_gp': loss_gp, 'loss_c': loss_d_class}, self.dis)
