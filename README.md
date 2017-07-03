@@ -19,9 +19,9 @@ By default, all models are tested on the CelabA dataset. You can find the traini
 
 ### Gradient Penalty
 
-Most of recent GANs (WGAN-GP, CramerGAN, DRAGAN) contains the gradient norm regularization, this has been proved as a way to stablize GAN training.
+Most of recent GANs (WGAN-GP, CramerGAN, DRAGAN) contains the gradient norm regularization, this has been proved as a way to stabilize GAN training.
 
-The current version of Chainer do not support high order derivatives, a solution is to mannually implement the backward procedure with auto-differentiable chainer.functions. (Refer WGAN-GP codes for the details.)
+The current version of Chainer do not support high order derivatives, a solution is to manually implement the backward procedure with auto-differentiable chainer.functions. (Refer WGAN-GP codes for the details.)
 
 * L.Linear, L.Convolution2D, L.Deconvolution2D, F.leaky_relu, F.relu, F.sigmoid, F.tanh, L.LayerNormalization is implemented.
 * Some GAN papers suggest to use LayerNormalization instead on BatchNormalization in the discriminator in the case of gradient penalty.
