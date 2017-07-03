@@ -64,7 +64,7 @@ class DCGANDiscriminator(chainer.Chain):
         return g
 
 class ACGANDiscriminator(chainer.Chain):
-    def __init__(self, in_ch=3, base_size=128, down_layers=4, use_bn=True, w_init=None, output_len=37):
+    def __init__(self, in_ch=3, base_size=128, down_layers=4, use_bn=True, w_init=None, output_len=38):
         layers = {}
 
         self.down_layers = down_layers
