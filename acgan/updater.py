@@ -21,7 +21,7 @@ class UpdaterWithGP(chainer.training.StandardUpdater):
         self._lambda_gp = params['lambda_gp']
         self._lambda_adv = params['lambda_adv']
         self._attr_len = params['attr_len']
-        self._threshold = 0.25
+        self._threshold = 0.75
         super(UpdaterWithGP, self).__init__(*args, **kwargs)
 
     def get_real_image_batch(self):
