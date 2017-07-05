@@ -118,9 +118,12 @@ class NNBlock(chainer.Chain):
             x = F.unpooling_2d(x, 2, 2, 0, cover_all=False)
         return x
 
-    def _do_after_cal(self, x, test):
+    def _do_after_cal_0(self, x):
         if self.nn == 'up_subpixel':
-            x = F.depth2space(self.c2(x), 2)
+            x = F.depth2space(x, 2)
+        return x
+
+    def _do_after_cal_1(self, x, test):
         if self.noise:
             x = add_noise(x, test=test)
         if self.dropout:
@@ -133,11 +136,11 @@ class NNBlock(chainer.Chain):
 
         x = self._do_before_cal(x)
         x = self.c(x)
-
+        x = self._do_after_cal_0(x)
         if not self.norm is None and not self.normalize_input:
             x = self._do_normalization(x, test, retain_forward=retain_forward)
-        x = self._do_after_cal(x, test)
-
+        x = self._do_after_cal_1(x, test)
+        
         if not self.activation is None:
             x = self.activation(x)
 
