@@ -86,9 +86,9 @@ class ACGANDiscriminator(chainer.Chain):
             base*=2
 
         layers['c_last_0'] = NNBlock(None, 1, nn='linear', norm=None, activation=None, w_init=w_init)
-        layers['c_last_1_0'] = NNBlock(None, 1024, nn='linear', norm=None, activation=F.leaky_relu, w_init=None)
-        layers['c_last_1_1'] = NNBlock(1024, 1024, nn='linear', norm=None, activation=F.leaky_relu, w_init=None)
-        layers['c_last_1_2'] = NNBlock(1024, output_len, nn='linear', norm=None, activation=None, w_init=None)
+        layers['c_last_1_0'] = NNBlock(None, output_len, nn='linear', norm=None, activation=None, w_init=None)
+        #layers['c_last_1_1'] = NNBlock(1024, 1024, nn='linear', norm=None, activation=F.leaky_relu, w_init=None)
+        #layers['c_last_1_2'] = NNBlock(1024, output_len, nn='linear', norm=None, activation=None, w_init=None)
 
         super(ACGANDiscriminator, self).__init__(**layers)
 
@@ -101,8 +101,8 @@ class ACGANDiscriminator(chainer.Chain):
         h = F.reshape(h, (_b, _ch*_w*_h))
         h0 = self.c_last_0(h, test=test, retain_forward=retain_forward)
         h1 = self.c_last_1_0(h, test=test, retain_forward=retain_forward)
-        h1 = self.c_last_1_1(h1, test=test, retain_forward=retain_forward)
-        h1 = self.c_last_1_2(h1, test=test, retain_forward=retain_forward)
+        #h1 = self.c_last_1_1(h1, test=test, retain_forward=retain_forward)
+        #h1 = self.c_last_1_2(h1, test=test, retain_forward=retain_forward)
         return h0, h1
 
     def differentiable_backward(self, g):
