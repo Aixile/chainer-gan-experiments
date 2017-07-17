@@ -43,7 +43,7 @@ class ResBlock(chainer.Chain):
         if self.bn:
             h = self.bn0(h, test=test)
         h = self.activation(h)
-        h = self.c1(x)
+        h = self.c1(h)
         if self.bn:
             h = self.bn1(h, test=test)
         return h + x
@@ -140,7 +140,7 @@ class NNBlock(chainer.Chain):
         if not self.norm is None and not self.normalize_input:
             x = self._do_normalization(x, test, retain_forward=retain_forward)
         x = self._do_after_cal_1(x, test)
-        
+
         if not self.activation is None:
             x = self.activation(x)
 
